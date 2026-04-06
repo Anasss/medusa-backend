@@ -729,4 +729,42 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
 
   logger.info("Finished seeding inventory levels data.");
+
+  // Seed store promotions
+  logger.info("Seeding store promotions...");
+  const promotionService = container.resolve("storePromotion");
+
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
+  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const sixtyDaysFromNow = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+
+  await promotionService.createStorePromotions([
+    {
+      title: "Spring Sale",
+      description: "Fresh styles for the new season. Up to 30% off selected items.",
+      discount_percentage: 30,
+      start_date: tenDaysAgo,
+      end_date: thirtyDaysFromNow,
+      is_active: true,
+    },
+    {
+      title: "New Member Discount",
+      description: "Sign up and get 15% off your first order. Welcome to the family.",
+      discount_percentage: 15,
+      start_date: thirtyDaysAgo,
+      end_date: sixtyDaysFromNow,
+      is_active: true,
+    },
+    {
+      title: "Winter Clearance",
+      description: "Last chance to grab winter essentials at 50% off.",
+      discount_percentage: 50,
+      start_date: new Date("2025-12-01"),
+      end_date: new Date("2026-02-28"),
+      is_active: false,
+    },
+  ]);
+  logger.info("Finished seeding store promotions.");
 }
